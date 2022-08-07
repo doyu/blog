@@ -17,12 +17,12 @@
 <lastmod>2022-08-04T00:00:00-05:00</lastmod>
 </url>
 <url>
-<loc>https://doyu.github.io/blog/2022/08/05/a-Deep_Learning_from_scratch.html</loc>
+<loc>https://doyu.github.io/blog/2022/08/05/dataloader_y_shape.html</loc>
 <lastmod>2022-08-05T00:00:00-05:00</lastmod>
 </url>
 <url>
-<loc>https://doyu.github.io/blog/2022/08/05/dataloader_y_shape.html</loc>
-<lastmod>2022-08-05T00:00:00-05:00</lastmod>
+<loc>https://doyu.github.io/blog/2022/08/06/a-Deep_Learning_from_scratch.html</loc>
+<lastmod>2022-08-06T00:00:00-05:00</lastmod>
 </url>
 <url>
 <loc>https://doyu.github.io/blog/2022/08/06/fastai_learner.html</loc>
@@ -39,6 +39,10 @@
 <url>
 <loc>https://doyu.github.io/blog/2022/08/06/pytorch_without_nn.html</loc>
 <lastmod>2022-08-06T00:00:00-05:00</lastmod>
+</url>
+<url>
+<loc>https://doyu.github.io/blog/2022/08/07/dataloader_from_datablock.html</loc>
+<lastmod>2022-08-07T00:00:00-05:00</lastmod>
 </url>
 <url>
 <loc>https://doyu.github.io/blog/about/</loc>
