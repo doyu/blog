@@ -149,8 +149,14 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">y</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">n_classes</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">X</span><span class="nd">@W</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span>
 </pre></div>
 
     </div>
@@ -165,12 +171,12 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[-0.0140, -0.5906,  2.3905],
-        [ 0.9921, -0.2100, -0.8631],
-        [-0.0901, -1.0944,  0.5427],
-        [ 2.2431,  0.3458, -0.0150],
-        [-1.2485,  1.3326, -0.0441],
-        [-1.1257, -0.0526,  0.5224]])</pre>
+<pre>(torch.Size([5, 3]),
+ tensor([[2.8238, 7.4035, 0.0000],
+         [4.0516, 1.9607, 5.3125],
+         [0.0000, 0.1175, 0.2113],
+         [1.3030, 0.0000, 5.0081],
+         [0.0000, 0.0000, 7.8666]]))</pre>
 </div>
 
 </div>
@@ -181,6 +187,13 @@ window.onload = wrap_img;
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>target {0,1,2}</p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -188,7 +201,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">random_</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">random_</span><span class="p">(</span><span class="n">n_classes</span><span class="p">)</span>
 <span class="n">t</span>
 </pre></div>
 
@@ -204,7 +217,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1, 2, 2, 1, 1, 2])</pre>
+<pre>tensor([0, 1, 2, 1, 2])</pre>
 </div>
 
 </div>
@@ -222,7 +235,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 <span class="n">loss</span>
 </pre></div>
 
@@ -238,7 +251,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([3.1130, 2.2316, 0.5456, 2.1240, 0.2837, 0.5626])</pre>
+<pre>tensor(2.5016)</pre>
 </div>
 
 </div>
@@ -256,7 +269,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -271,7 +284,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([3.1130, 2.2316, 0.5456, 2.1240, 0.2837, 0.5626])</pre>
+<pre>tensor(2.5016)</pre>
 </div>
 
 </div>
@@ -304,12 +317,11 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[0.0791, 0.0445, 0.8764],
-        [0.6864, 0.2063, 0.1074],
-        [0.3078, 0.1127, 0.5795],
-        [0.7971, 0.1195, 0.0833],
-        [0.0570, 0.7530, 0.1900],
-        [0.1096, 0.3206, 0.5697]])</pre>
+<pre>tensor([[2.8882e-02, 3.4899e-01, 6.2212e-01],
+        [2.4541e-03, 8.4614e-04, 9.9670e-01],
+        [1.3856e-01, 3.2859e-02, 8.2858e-01],
+        [3.3355e-02, 9.5331e-01, 1.3336e-02],
+        [2.1736e-01, 5.9117e-01, 1.9147e-01]])</pre>
 </div>
 
 </div>
@@ -342,7 +354,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000])</pre>
+<pre>tensor([1.0000, 1.0000, 1.0000, 1.0000, 1.0000])</pre>
 </div>
 
 </div>
@@ -375,7 +387,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([-5.7814, -4.1864, -3.9067, -4.8356, -4.8091, -3.9107])</pre>
+<pre>tensor([ -5.0719, -13.0881,  -5.5800,  -7.7657,  -3.7049])</pre>
 </div>
 
 </div>
@@ -408,7 +420,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([-5.7814, -4.1864, -3.9067, -4.8356, -4.8091, -3.9107])</pre>
+<pre>tensor([ -5.0719, -13.0881,  -5.5800,  -7.7657,  -3.7049])</pre>
 </div>
 
 </div>
@@ -426,7 +438,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">(),</span> <span class="n">t</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -441,7 +453,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([3.1130, 2.2316, 0.5456, 2.1240, 0.2837, 0.5626])</pre>
+<pre>tensor(2.5016)</pre>
 </div>
 
 </div>
@@ -459,8 +471,11 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
-<span class="n">idx</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y0</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="n">y0</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="n">y0</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="o">-</span><span class="n">y0</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">y0</span>
 </pre></div>
 
     </div>
@@ -475,7 +490,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[(0, 1), (1, 2), (2, 2), (3, 1), (4, 1), (5, 2)]</pre>
+<pre>tensor(2.8518)</pre>
 </div>
 
 </div>
@@ -493,7 +508,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -508,111 +523,7 @@ window.onload = wrap_img;
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[tensor(-3.1130),
- tensor(-2.2316),
- tensor(-0.5456),
- tensor(-2.1240),
- tensor(-0.2837),
- tensor(-0.5626)]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([-3.1130, -2.2316, -0.5456, -2.1240, -0.2837, -0.5626])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">-</span><span class="nb">sum</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">tolist</span><span class="p">()])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor(8.8605)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(tensor(8.8605), tensor(1.4768))</pre>
+<pre>tensor(2.8518)</pre>
 </div>
 
 </div>
