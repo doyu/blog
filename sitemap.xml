@@ -45,10 +45,6 @@
 <lastmod>2022-08-08T00:00:00-05:00</lastmod>
 </url>
 <url>
-<loc>https://doyu.github.io/blog/2022/08/08/a-Deep_Learning_from_scratch.html</loc>
-<lastmod>2022-08-08T00:00:00-05:00</lastmod>
-</url>
-<url>
 <loc>https://doyu.github.io/blog/2022/08/08/cross_entropy_loss.html</loc>
 <lastmod>2022-08-08T00:00:00-05:00</lastmod>
 </url>
@@ -61,6 +57,14 @@
 <lastmod>2022-08-09T00:00:00-05:00</lastmod>
 </url>
 <url>
+<loc>https://doyu.github.io/blog/2022/08/14/a-Deep_Learning_from_scratch.html</loc>
+<lastmod>2022-08-14T00:00:00-05:00</lastmod>
+</url>
+<url>
+<loc>https://doyu.github.io/blog/2022/08/15/collaborative_filtering.html</loc>
+<lastmod>2022-08-15T00:00:00-05:00</lastmod>
+</url>
+<url>
 <loc>https://doyu.github.io/blog/about/</loc>
 </url>
 <url>
@@ -71,5 +75,8 @@
 </url>
 <url>
 <loc>https://doyu.github.io/blog/categories/</loc>
+</url>
+<url>
+<loc>https://doyu.github.io/blog/page2/</loc>
 </url>
 </urlset>

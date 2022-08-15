@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>MovieLens with Collaboration Filtering from fastbook 08 | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="MovieLens with Collaboration Filtering from fastbook 08" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
+<meta property="og:description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
+<link rel="canonical" href="https://doyu.github.io/blog/2022/08/15/collaborative_filtering.html" />
+<meta property="og:url" content="https://doyu.github.io/blog/2022/08/15/collaborative_filtering.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="MovieLens with Collaboration Filtering from fastbook 08" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-15T00:00:00-05:00","datePublished":"2022-08-15T00:00:00-05:00","description":"An easy to use blogging platform with support for Jupyter Notebooks.","headline":"MovieLens with Collaboration Filtering from fastbook 08","mainEntityOfPage":{"@type":"WebPage","@id":"https://doyu.github.io/blog/2022/08/15/collaborative_filtering.html"},"url":"https://doyu.github.io/blog/2022/08/15/collaborative_filtering.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://doyu.github.io/blog/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">MovieLens with Collaboration Filtering from fastbook 08</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-08-15T00:00:00-05:00" itemprop="datePublished">
+        Aug 15, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/doyu/blog/tree/master/_notebooks/2022-08-15-collaborative_filtering.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/doyu/blog/master?filepath=_notebooks%2F2022-08-15-collaborative_filtering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/doyu/blog/blob/master/_notebooks/2022-08-15-collaborative_filtering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fdoyu%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-08-15-collaborative_filtering.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-08-15-collaborative_filtering.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.collab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.tabular.all</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ML_100k</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">/</span><span class="s1">&#39;u.data&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;movie&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">])</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;timestamp&#39;</span><span class="p">)</span>
+<span class="n">ratings</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user</th>
+      <th>movie</th>
+      <th>rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>196</td>
+      <td>242</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>186</td>
+      <td>302</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>22</td>
+      <td>377</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>244</td>
+      <td>51</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>166</td>
+      <td>346</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">CollabDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">item_name</span><span class="o">=</span><span class="s1">&#39;movie&#39;</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user</th>
+      <th>movie</th>
+      <th>rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>622</td>
+      <td>190</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>647</td>
+      <td>134</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>786</td>
+      <td>174</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>233</td>
+      <td>286</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>405</td>
+      <td>1540</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>301</td>
+      <td>404</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>495</td>
+      <td>665</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>222</td>
+      <td>1011</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>940</td>
+      <td>746</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>855</td>
+      <td>1021</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(#2) [&#39;user&#39;,&#39;movie&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_users</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">])</span>
+<span class="n">n_movies</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;movie&#39;</span><span class="p">])</span>
+<span class="n">n_factors</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">user_factors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+<span class="n">movie_factors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="MSE-for-Dot-products">MSE for Dot products<a class="anchor-link" href="#MSE-for-Dot-products"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">DotProduct</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_factors</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movie_factors</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_factors</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">movies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">movie_factors</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>        
+        <span class="k">return</span> <span class="p">(</span><span class="n">users</span> <span class="o">*</span> <span class="n">movies</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DotProduct</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1.319163</td>
+      <td>1.301567</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1.072238</td>
+      <td>1.126393</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.973071</td>
+      <td>1.006744</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.819768</td>
+      <td>0.915777</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.800278</td>
+      <td>0.895146</td>
+      <td>00:06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+" />
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Specify-Rating-range">Specify Rating range<a class="anchor-link" href="#Specify-Rating-range"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">DotProductRange</span><span class="p">(</span><span class="n">DotProduct</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">5.5</span><span class="p">)):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span> <span class="o">=</span> <span class="n">y_range</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sigmoid_range</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DotProductRange</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1.003102</td>
+      <td>0.991639</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.872051</td>
+      <td>0.895169</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.663116</td>
+      <td>0.866403</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.477195</td>
+      <td>0.875070</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.354954</td>
+      <td>0.879459</td>
+      <td>00:06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Add-Bias-respectively">Add Bias respectively<a class="anchor-link" href="#Add-Bias-respectively"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">DotProductBias</span><span class="p">(</span><span class="n">DotProductRange</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">5.5</span><span class="p">)):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">5.5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_bias</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movie_bias</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">foward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_bias</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">movie_bias</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">sigmoid_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DotProductBias</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.975578</td>
+      <td>0.985670</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.892065</td>
+      <td>0.903127</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.683729</td>
+      <td>0.865251</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.478993</td>
+      <td>0.868494</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.370724</td>
+      <td>0.872040</td>
+      <td>00:06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="With-Decay-(L2-regularization)">With Decay (L2 regularization)<a class="anchor-link" href="#With-Decay-(L2-regularization)"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DotProductBias</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.975578</td>
+      <td>0.985670</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.892065</td>
+      <td>0.903127</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.683729</td>
+      <td>0.865251</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.478993</td>
+      <td>0.868494</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.370724</td>
+      <td>0.872040</td>
+      <td>00:06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-fastai.collab">Using fastai.collab<a class="anchor-link" href="#Using-fastai.collab"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">n_factors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.963955</td>
+      <td>0.955790</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.861782</td>
+      <td>0.877639</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.738184</td>
+      <td>0.837129</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.586984</td>
+      <td>0.824137</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.497118</td>
+      <td>0.824534</td>
+      <td>00:07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">model</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>EmbeddingDotBias(
+  (u_weight): Embedding(944, 50)
+  (i_weight): Embedding(1655, 50)
+  (u_bias): Embedding(944, 1)
+  (i_bias): Embedding(1655, 1)
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Deep-Learning-for-Collaborative-Filtering">Deep Learning for Collaborative Filtering<a class="anchor-link" href="#Deep-Learning-for-Collaborative-Filtering"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">embs</span> <span class="o">=</span> <span class="n">get_emb_sz</span><span class="p">(</span><span class="n">dls</span><span class="p">)</span>
+<span class="n">embs</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(944, 74), (1655, 102)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">CollabNN</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_sz</span><span class="p">,</span> <span class="n">item_sz</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">n_act</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_factors</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="o">*</span><span class="n">user_sz</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_factors</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="o">*</span><span class="n">item_sz</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">user_sz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">item_sz</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_act</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_act</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span> <span class="o">=</span> <span class="n">y_range</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">embs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_factors</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_factors</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">sigmoid_range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CollabNN</span><span class="p">(</span><span class="o">*</span><span class="n">embs</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.967367</td>
+      <td>0.956959</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.912710</td>
+      <td>0.909662</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.835822</td>
+      <td>0.888609</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.782297</td>
+      <td>0.876654</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.781319</td>
+      <td>0.875355</td>
+      <td>00:07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">use_nn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.981277</td>
+      <td>0.965048</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.905343</td>
+      <td>0.908017</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.843490</td>
+      <td>0.867771</td>
+      <td>00:08</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.821534</td>
+      <td>0.851313</td>
+      <td>00:07</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.756023</td>
+      <td>0.853258</td>
+      <td>00:07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/blog/2022/08/15/collaborative_filtering.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/doyu" target="_blank" title="doyu"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/doyu" target="_blank" title="doyu"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
