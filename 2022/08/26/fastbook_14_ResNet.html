@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      2 min read
+      3 min read
     
 </span></p>
 
@@ -352,8 +352,8 @@ window.onload = wrap_img;
         
         <span class="n">l</span> <span class="o">=</span> <span class="n">_resnet_stem</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
         
-        <span class="n">l</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_layer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">block_szs</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>    <span class="mi">1</span><span class="p">)]</span> <span class="c1"># Do 0th</span>
-        <span class="n">l</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_layer</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">block_szs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Do the rest</span>
+        <span class="n">l</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_layer</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">block_szs</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span>    <span class="mi">1</span><span class="p">)]</span> <span class="c1"># Do 0th</span>
+        <span class="n">l</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_layer</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">block_szs</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Do the rest</span>
               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">))]</span>
         
         <span class="c1"># Appending the Head part</span>
@@ -365,7 +365,7 @@ window.onload = wrap_img;
         
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">_make_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">,</span> <span class="n">ch_out</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_make_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">,</span> <span class="n">ch_out</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
         <span class="n">l</span> <span class="o">=</span>  <span class="p">[</span><span class="n">ResBlock</span><span class="p">(</span><span class="n">ch_in</span><span class="p">,</span>  <span class="n">ch_out</span><span class="p">,</span> <span class="n">stride</span><span class="p">)]</span> <span class="c1"># Do 0th</span>
         <span class="n">l</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ResBlock</span><span class="p">(</span><span class="n">ch_out</span><span class="p">,</span> <span class="n">ch_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>       <span class="c1"># Do the rest</span>
               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">)]</span>
@@ -542,8 +542,8 @@ window.onload = wrap_img;
 <div class="output_html rendered_html output_subarea ">
 
     <div>
-      <progress value="2" class="" max="20" style="width:300px; height:20px; vertical-align: middle;"></progress>
-      10.00% [2/20 03:03&lt;27:33]
+      <progress value="19" class="" max="20" style="width:300px; height:20px; vertical-align: middle;"></progress>
+      95.00% [19/20 29:50&lt;01:34]
     </div>
     
 <table border="1" class="dataframe">
@@ -571,12 +571,131 @@ window.onload = wrap_img;
       <td>0.533758</td>
       <td>01:32</td>
     </tr>
+    <tr>
+      <td>2</td>
+      <td>1.265062</td>
+      <td>1.538380</td>
+      <td>0.535541</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1.160110</td>
+      <td>1.392963</td>
+      <td>0.538344</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1.063608</td>
+      <td>2.391305</td>
+      <td>0.418853</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.950941</td>
+      <td>1.787218</td>
+      <td>0.471338</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.848306</td>
+      <td>1.497377</td>
+      <td>0.636433</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.783319</td>
+      <td>0.930480</td>
+      <td>0.701401</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.713762</td>
+      <td>1.030928</td>
+      <td>0.681783</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.639707</td>
+      <td>1.577286</td>
+      <td>0.574013</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.604874</td>
+      <td>0.995040</td>
+      <td>0.695541</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.539998</td>
+      <td>0.803806</td>
+      <td>0.754650</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.484867</td>
+      <td>0.688639</td>
+      <td>0.779618</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.459248</td>
+      <td>0.712160</td>
+      <td>0.785733</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.392319</td>
+      <td>0.468867</td>
+      <td>0.857580</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>0.353768</td>
+      <td>0.558457</td>
+      <td>0.837197</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>0.314284</td>
+      <td>0.418582</td>
+      <td>0.871338</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>0.287317</td>
+      <td>0.439048</td>
+      <td>0.866752</td>
+      <td>01:34</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>0.260283</td>
+      <td>0.403132</td>
+      <td>0.877452</td>
+      <td>01:34</td>
+    </tr>
   </tbody>
 </table><p>
 
     <div>
-      <progress value="55" class="" max="73" style="width:300px; height:20px; vertical-align: middle;"></progress>
-      75.34% [55/73 01:01&lt;00:20 1.2817]
+      <progress value="49" class="" max="73" style="width:300px; height:20px; vertical-align: middle;"></progress>
+      67.12% [49/73 00:55&lt;00:26 0.2407]
     </div>
     
 &lt;/div&gt;
